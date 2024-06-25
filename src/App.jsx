@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import axios from 'axios';
 import SearchBar from './components/SearchBar/SearchBar';
 import ImageGallery from './components/ImageGallery/ImageGallery';
 import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
@@ -24,14 +25,14 @@ const App = () => {
         params: {
           query,
           page,
-          client_id: 'yAbV-TMOSsUiXLQ4zombON14Oh9M9I6dufuwM3W6iPU'
+          client_id: 'yAbV-TMOSsUiXLQ4zombON14Oh9M9I6dufuwM3W6iPU' 
         }
       });
 
       if (page === 1) {
         setImages(response.data.results);
       } else {
-        setImages(prevImages => [...prevImages, ...response.data.results]);
+        setImages((prevImages) => [...prevImages, ...response.data.results]);
       }
     } catch (error) {
       setError(error.message);
@@ -57,8 +58,9 @@ const App = () => {
       <SearchBar onSearch={handleSearch} />
       {error && <ErrorMessage message={error} />}
       <ImageGallery images={images} onImageClick={setSelectedImage} />
-      {loading ? <Loader /> : <LoadMoreBtn onLoadMore={handleLoadMore} />}
-      {selectedImage && <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />}
+      {loading && <Loader />}
+      {!loading && images.length > 0 && <LoadMoreBtn onLoadMore={handleLoadMore} />}
+      <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />
     </div>
   );
 };
